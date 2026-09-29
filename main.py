@@ -104,7 +104,7 @@ async def daily_job(context: ContextTypes.DEFAULT_TYPE):
                 self.end_headers()
                 self.wfile.write(b"Arcane Circle Tarot is alive!")
 
-        def log_message(self, format, *args):
+    def log_message(self, format, *args):
             pass
 
 
@@ -114,7 +114,7 @@ async def daily_job(context: ContextTypes.DEFAULT_TYPE):
         print(f"Health server listening on 0.0.0.0:{port}", flush=True)
         server.serve_forever()
     
-def main():
+    def main():
     threading.Thread(target=run_health_server, daemon=True).start()
 
     if not TOKEN:
