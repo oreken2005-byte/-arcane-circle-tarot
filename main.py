@@ -96,6 +96,7 @@ async def daily_job(context: ContextTypes.DEFAULT_TYPE):
         text=f"🌙 <b>Arcane Circle — карта дня</b>\n\n🃏 <b>{name}</b>\n\n{meaning}",
         parse_mode="HTML",
     )
+    
     class HealthHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
