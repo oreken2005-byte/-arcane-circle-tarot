@@ -115,26 +115,26 @@ async def daily_job(context: ContextTypes.DEFAULT_TYPE):
         server.serve_forever()
     
     def main():
-    threading.Thread(target=run_health_server, daemon=True).start()
+        threading.Thread(target=run_health_server, daemon=True).start()
+        
+        if not TOKEN:
+            raise RuntimeError("BOT_TOKEN is not set")
+            
+        app = Application.builder().token(TOKEN).build()
+        
+        app.add_handler(CommandHandler("start", start))
+        app.add_handler(CommandHandler("today", today_command))
+        app.add_handler(CommandHandler("card", card_command))
+        app.add_handler(CommandHandler("love", love_command))
+        app.add_handler(CommandHandler("money", money_command))
+        app.add_handler(CommandHandler("advice", advice_command))
+        app.add_handler(CommandHandler("help", help_command))
 
-    if not TOKEN:
-        raise RuntimeError("BOT_TOKEN is not set")
+        # Optional automatic daily post. Set DAILY_CHAT_ID and DAILY_HOUR (0–23).
+        daily_hour = int(os.environ.get("DAILY_HOUR", "9"))
+        app.job_queue.run_daily(daily_job, time(hour=daily_hour, minute=0))
 
-    app = Application.builder().token(TOKEN).build()
-
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(CommandHandler("today", today_command))
-    app.add_handler(CommandHandler("card", card_command))
-    app.add_handler(CommandHandler("love", love_command))
-    app.add_handler(CommandHandler("money", money_command))
-    app.add_handler(CommandHandler("advice", advice_command))
-    app.add_handler(CommandHandler("help", help_command))
-
-    # Optional automatic daily post. Set DAILY_CHAT_ID and DAILY_HOUR (0–23).
-    daily_hour = int(os.environ.get("DAILY_HOUR", "9"))
-    app.job_queue.run_daily(daily_job, time(hour=daily_hour, minute=0))
-
-    app.run_polling()
+        app.run_polling()
 
 if __name__ == "__main__":
     main()
