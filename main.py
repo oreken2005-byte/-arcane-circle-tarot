@@ -1,5 +1,7 @@
 import os
 import random
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from datetime import time
 from telegram import Update
 from telegram.ext import (
@@ -94,8 +96,25 @@ async def daily_job(context: ContextTypes.DEFAULT_TYPE):
         text=f"🌙 <b>Arcane Circle — карта дня</b>\n\n🃏 <b>{name}</b>\n\n{meaning}",
         parse_mode="HTML",
     )
+    class HealthHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-type", "text/plain")
+        self.end_headers()
+        self.wfile.write(b"Arcane Circle Tarot is alive!")
+
+    def log_message(self, format, *args):
+        pass
+
+
+def run_health_server():
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(("0.0.0.0", port), HealthHandler)
+    server.serve_forever()
 
 def main():
+    threading.Thread(target=run_health_server, daemon=True).start()
+
     if not TOKEN:
         raise RuntimeError("BOT_TOKEN is not set")
 
