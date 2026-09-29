@@ -111,6 +111,7 @@ async def daily_job(context: ContextTypes.DEFAULT_TYPE):
 def run_health_server():
     port = int(os.environ.get("PORT", 10000))
     server = HTTPServer(("0.0.0.0", port), HealthHandler)
+print(f"Health server listening on 0.0.0.0:{port}", flush=True)
     server.serve_forever()
     
 def main():
